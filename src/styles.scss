@@ -93,7 +93,7 @@ img {
   cursor: pointer;
 
   &__active {
-    color: var(--key-color-dark);
+    color: red;
   }
 
   svg {
