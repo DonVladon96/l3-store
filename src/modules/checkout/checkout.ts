@@ -4,36 +4,48 @@ import html from './checkout.tpl.html';
 import { formatPrice } from '../../utils/helpers';
 import { cartService } from '../../services/cart.service';
 import { ProductData } from 'types';
+import { analyticService } from '../../services/analytics.service';
 
 class Checkout extends Component {
   products!: ProductData[];
 
+  // Рендеринг компонента Checkout
   async render() {
+    // Получение продуктов из корзины
     this.products = await cartService.get();
 
+    // Если корзина пуста, добавляем класс 'is__empty' и завершаем выполнение
     if (this.products.length < 1) {
       this.view.root.classList.add('is__empty');
       return;
     }
 
+    // Для каждого продукта создаем компонент Product, рендерим и прикрепляем к корзине
     this.products.forEach((product) => {
       const productComp = new Product(product, { isHorizontal: true });
       productComp.render();
       productComp.attach(this.view.cart);
     });
 
+    // Вычисление общей стоимости продуктов и отображение на экране
     const totalPrice = this.products.reduce((acc, product) => (acc += product.salePriceU), 0);
     this.view.price.innerText = formatPrice(totalPrice);
 
+    // Установка обработчика события для кнопки оформления заказа
     this.view.btnOrder.onclick = this._makeOrder.bind(this);
   }
 
+  // Приватный метод для оформления заказа
   private async _makeOrder() {
+    // Очистка корзины и отправка данных о заказе на сервер
     await cartService.clear();
     fetch('/api/makeOrder', {
       method: 'POST',
       body: JSON.stringify(this.products)
     });
+
+    // Отправляю данные аналитики о покупке и перенаправление на страницу успешного заказа
+    analyticService.sendPurchase(this.products);
     window.location.href = '/?isSuccessOrder';
   }
 }
