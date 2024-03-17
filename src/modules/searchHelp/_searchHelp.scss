@@ -1,0 +1,32 @@
+.searchHelp {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+  width: 100%;
+
+  &__text {
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 24px;
+    letter-spacing: -0.2px;
+  }
+
+  &__wrapper {
+    margin: 0;
+    padding: 2px 6px 4px;
+    background-color: var(--plate-color);
+    border-radius: 8px;
+  }
+
+  &__link {
+    position: relative;
+    line-height: 28px;
+    text-decoration: none;
+    background: linear-gradient(93deg, #DA15B8 4.93%, #8D06CC 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
